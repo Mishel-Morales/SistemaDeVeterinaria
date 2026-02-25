@@ -5,58 +5,101 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Mails, MapPin, Phone, Search } from "lucide-react";
+import { Mails, MapPin, Phone, RotateCw, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import type { RootState } from "@/app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import type { owner } from "@/types/owners/ownersType";
+import { AlertDialogDestructive } from "./AlertDialogDestructive";
+import { Button } from "./ui/button";
+import { setModalOwners, setOwnersList, setSelectModalOwners } from "@/features/owners/slice";
 
-const CardOwners = (props: any) => {
-    const { title, date } = props;
-    console.log(title, 'este es title', date, 'Esto es date')
+const CardOwners = () => {
+    const { ownersList } = useSelector((state: RootState) => state.OwnersSlice.data);
+    const { status } = useSelector((state: RootState) => state.OwnersSlice.modal);
+    const { patientsList } = useSelector((state: RootState) => state.PatientsSlice.data);
+    const [data, setData] = useState<owner[]>(ownersList);
+    const dispatch = useDispatch();
 
-    const data = [
-        { id: 1, date: "2026-02-08", time: "09:00", pet: "Max", species: "Perro", owner: "Carlos Mendez", reason: "Vacunacion", vet: "Dr. Vargas", status: "confirmada", description: "Vacuna Rabia Anual" },
-        { id: 2, date: "2026-02-08", time: "09:30", pet: "Luna", species: "Gato", owner: "Ana Torres", reason: "Revision general", vet: "Dra. Martinez", status: "en-curso", description: "Control Semestral" },
-        { id: 3, date: "2026-02-08", time: "10:15", pet: "Rocky", species: "Perro", owner: "Miguel Ruiz", reason: "Problema dermatologico", vet: "Dr. Vargas", status: "confirmada", description: "dfsfs" },
-        { id: 4, date: "2026-02-08", time: "11:00", pet: "Milo", species: "Gato", owner: "Laura Garcia", reason: "Cirugia Menor", vet: "Dra. Martinez", status: "pendiente", description: "Esterilizacion" },
-        { id: 5, date: "2026-02-08", time: "11:45", pet: "Nina", species: "Perro", owner: "Pedro Sanchez", reason: "Control post-operatorio", vet: "Dr. Vargas", status: "confirmada", description: "Por cirugia en la pata izquierda" },
-        { id: 6, date: "2026-02-08", time: "14:00", pet: "Coco", species: "Perro", owner: "Maria Lopez", reason: "Vacunacion", vet: "Dr. Vargas", status: "pendiente", description: "Vacuna Rabia Anual" },
-        { id: 7, date: "2026-02-09", time: "09:00", pet: "Whiskers", species: "Gato", owner: "Jorge Diaz", reason: "Limpieza dental", vet: "Dra. Martinez", status: "confirmada", description: "fsfafsdf" },
-        { id: 8, date: "2026-02-09", time: "10:30", pet: "Buddy", species: "Perro", owner: "Sofia Herrera", reason: "Revision de piel", vet: "Dr. Vargas", status: "pendiente", description: "fdfs" },
-    ]
-    const today = data.filter((a) => a.date === "2026-02-08");
-    const tomorrow = data.filter((a) => a.date === "2026-02-09");
+    const deleteOwner = (id: number) => {
+        const deleteP = ownersList.filter((owner) => owner.id != id);
+        dispatch(setOwnersList(deleteP));
+    };
+
+    const updateOwner = (id: number) => {
+        const owner = ownersList.find((o) => o.id === id);
+
+        const select = owner && {
+            id: owner.id,
+            name: owner.name,
+            phone: owner.phone,
+            email: owner.email,
+            address: owner.address
+        };
+
+        dispatch(setSelectModalOwners(select));
+        dispatch(setModalOwners(true));
+    };
+
+    useEffect(() => {
+        setData(ownersList);
+    }, [ownersList]);
 
     return (
         data.map((data, index) => (
-            <Card className="w-full max-w-sm hover:not-focus:bg-gray-200/25">
+            <Card key={index} className="hover:not-focus:bg-gray-300/25">
                 <CardHeader>
-                    <CardTitle className="flex items-center">
-                        <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-cyan-300/25 text-cyan-300 ">
-                                MM
-                            </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm mx-2">
-                            Mishel Morales
-                        </span>
-                        <div className={data.status == 'pendiente' && 'bg-red-500 rounded-xl px-2 text-sm font-normal' || data.status == 'confirmada' && 'bg-lime-300 rounded-xl p-1 text-sm font-normal'}>
+                    <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <Avatar className="h-10 w-10">
+                                <AvatarFallback className="bg-cyan-300/25 text-cyan-300 ">
+                                    MM
+                                </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm mx-2">
+                                {data.name}
+                            </span>
+                        </div>
+                        <div className={data.status == 'Inactivo' ? 'bg-red-500 rounded-xl px-2 text-sm font-normal' : 'bg-lime-500/50 rounded-xl p-1 text-sm font-normal text-green-500'}>
                             {data.status}
+                        </div>
+                        <div>
+                            <AlertDialogDestructive
+                                title={data.name}
+                                onClick={() => deleteOwner(data.id)}
+                            >
+                                <Button variant="ghost">
+                                    <Trash2 color="red" />
+                                </Button>
+                            </AlertDialogDestructive>
+                            <Button onClick={() => updateOwner(data.id)} variant="ghost">
+                                <RotateCw color="green" />
+                            </Button>
                         </div>
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col text-sm text-light">
                     <p className="flex m-1">
-                        <Phone className="me-3" />+502 3952 5421
+                        <Phone className="me-3" /> {data.phone}
                     </p>
                     <p className="flex m-1">
-                        <Mails className="me-3" />  usuario2026@gmail.com
+                        <Mails className="me-3" /> {data.email}
                     </p>
                     <p className="flex m-1">
-                        <MapPin className="me-3" /> Tecpán, zona 1
+                        <MapPin className="me-3" /> {data.address}
                     </p>
                 </CardContent>
                 <CardFooter className="flex justify-between border-t-2 pt-3">
-                    <p className="rounded-xl px-3 text-sm bg-gray-100">Luna</p>
-                    <p>3 visitas</p>
+                    {
+                        patientsList.filter(pet => pet.owner === data.name)
+                            .map((pet, index) => (
+                                <p key={index} className="rounded-xl px-3 text-sm font-mono bg-gray-100">
+                                    {pet.name}
+                                </p>
+                            ))
+                    }
+                    <p className="text-muted-foreground">3 visitas</p>
                 </CardFooter>
             </Card>
         ))

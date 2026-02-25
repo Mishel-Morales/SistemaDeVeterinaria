@@ -21,8 +21,9 @@ import type { patients } from "@/types/patients/listPatients";
 
 const FormPatients = () => {
     const especies = ['Perro', 'Gato', 'Ave', 'Conejo'];
-    const propietarios = ['Mishel Morales', 'Luis Macario', 'Logan Hernandez', 'Wendy Rodriguez'];
+    const propietarios = ['Mishel Morales', 'Luis Macario', 'Logan Hernandez', 'Wendy Rodriguez', 'Melany Mejía'];
     const { data, modal } = useSelector((state: RootState) => state.PatientsSlice);
+    const { ownersList } = useSelector((state: RootState) => state.OwnersSlice.data);
     const dispatch = useDispatch();
 
     const form = useForm<z.infer<typeof validationPatients>>({
@@ -345,9 +346,9 @@ const FormPatients = () => {
                                     <SelectContent position="item-aligned">
                                         <SelectItem value="propietario">Selecciona a un propietario</SelectItem>
                                         {
-                                            propietarios.map((propietario, index) =>
-                                                <SelectItem key={index} value={propietario}>
-                                                    {propietario}
+                                            ownersList.map((item, index) =>
+                                                <SelectItem key={index} value={item.name}>
+                                                    {item.name}
                                                 </SelectItem>
                                             )
                                         }
