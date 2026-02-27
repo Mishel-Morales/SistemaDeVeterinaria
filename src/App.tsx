@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Citas from "./pages/Citas";
 import Owners from "./pages/Owners";
 import Queries from "./pages/Queries";
+import Record from "./pages/Record";
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/citas" element={<Citas />} />
           <Route path="/propietarios" element={<Owners />} />
           <Route path="/consultas" element={<Queries />} />
+          <Route path="/historial" element={<Record />} />
         </Route>
       </Routes>
     </BrowserRouter>
