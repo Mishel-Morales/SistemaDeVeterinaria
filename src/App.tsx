@@ -6,6 +6,7 @@ import Citas from "./pages/Citas";
 import Owners from "./pages/Owners";
 import Queries from "./pages/Queries";
 import Record from "./pages/Record";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />}></Route>
         <Route element={<Layout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pacientes" element={<Pacientes />} />
           <Route path="/citas" element={<Citas />} />
           <Route path="/propietarios" element={<Owners />} />
