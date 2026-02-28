@@ -7,6 +7,7 @@ import Owners from "./pages/Owners";
 import Queries from "./pages/Queries";
 import Record from "./pages/Record";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/propietarios" element={<Owners />} />
           <Route path="/consultas" element={<Queries />} />
           <Route path="/historial" element={<Record />} />
+          <Route path="/configuracion" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>
